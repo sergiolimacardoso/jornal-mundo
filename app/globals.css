@@ -158,6 +158,58 @@ a {
   color: var(--crimson);
 }
 
+/* ---------- Breaking news ticker ---------- */
+
+.breaking {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--crimson);
+  color: var(--paper);
+  padding: 10px 16px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+}
+
+.breaking-tag {
+  flex-shrink: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--paper);
+  color: var(--crimson);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.breaking-text {
+  font-family: "Piazzolla", serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  flex: 1;
+}
+
+.breaking-source {
+  flex-shrink: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.breaking:hover .breaking-text {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .breaking {
+    flex-wrap: wrap;
+  }
+}
+
 /* ---------- Lead story ---------- */
 
 .lead {

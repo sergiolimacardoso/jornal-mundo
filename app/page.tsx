@@ -28,6 +28,11 @@ export default async function Home() {
   const lead = allMundo[0];
   const restMundo = allMundo.slice(1, 6);
 
+  const allHeadlines = SECTION_ORDER.flatMap((s) => bySection[s]);
+  const breaking = allHeadlines
+    .filter((h) => h.pubDate && !isNaN(new Date(h.pubDate).getTime()))
+    .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())[0];
+
   return (
     <main className="wrap">
       <header className="masthead">
@@ -52,6 +57,22 @@ export default async function Home() {
           </a>
         ))}
       </nav>
+
+      {breaking && (
+        <a
+          className="breaking"
+          href={breaking.link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="breaking-tag">Última hora</span>
+          <span className="breaking-text">{breaking.title}</span>
+          <span className="breaking-source">
+            {breaking.source}
+            {breaking.pubDate ? ` · ${formatTime(breaking.pubDate)}` : ""}
+          </span>
+        </a>
+      )}
 
       {lead && (
         <section className="lead">
@@ -91,8 +112,8 @@ export default async function Home() {
       </div>
 
       <footer>
-        O Correio Global reúne manchetes de fontes públicas (BBC, Al Jazeera, NPR) e atualiza a cada hora. As
-        matérias completas estão nos sites originais das agências.
+        O Correio Global reúne manchetes de fontes públicas (G1, BBC News Brasil, Agência Brasil e CNN Brasil) e
+        atualiza a cada hora. As matérias completas estão nos sites originais dos veículos.
       </footer>
     </main>
   );
