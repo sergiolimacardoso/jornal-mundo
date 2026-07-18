@@ -44,137 +44,184 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="wrap">
-      <header className="masthead">
-        <div className="masthead-top">
-          <span>Edição digital</span>
-          <span>{formatDate()}</span>
-        </div>
-        <div className="masthead-main">
-          <div className="title-block">
-            <p className="eyebrow">Notícias do mundo, sem parar</p>
-            <h1>O Correio Global</h1>
-            <p className="tagline">Atualizado automaticamente a cada hora, direto das principais agências.</p>
+    <>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+        <div className="container">
+          <a className="navbar-brand brand-logo fs-3" href="#">
+            O Correio Global
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="mainNav">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              {SECTION_ORDER.map((s) => (
+                <li className="nav-item" key={s}>
+                  <a className="nav-link" href={`#${s}`}>
+                    {s}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <span className="d-none d-lg-block">
+              <EditionStamp />
+            </span>
           </div>
-          <EditionStamp />
         </div>
-      </header>
+      </nav>
 
+      {/* Currency ticker */}
       {currencies.length > 0 && (
-        <div className="ticker">
-          <span className="ticker-label">Mercado</span>
-          <div className="ticker-items">
+        <div className="bg-black text-white py-2">
+          <div className="container d-flex align-items-center gap-3 ticker-strip">
+            <span className="badge bg-secondary flex-shrink-0">Mercado</span>
             {currencies.map((c) => (
-              <span className="ticker-item" key={c.code}>
-                <strong>{c.code}</strong> {c.name}{" "}
+              <span key={c.code} className="small flex-shrink-0">
+                <strong>{c.code}</strong>{" "}
                 <span className="ticker-value">
-                  {c.valueInBRL.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
+                  {c.valueInBRL.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </span>
               </span>
             ))}
+            <a
+              href="https://www.exchangerate-api.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="small text-white-50 text-decoration-none ms-auto flex-shrink-0"
+            >
+              Cotações: ExchangeRate-API
+            </a>
           </div>
-          <a
-            className="ticker-credit"
-            href="https://www.exchangerate-api.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Cotações: ExchangeRate-API
-          </a>
         </div>
       )}
 
-      <nav className="section-nav">
-        {SECTION_ORDER.map((s) => (
-          <a key={s} href={`#${s}`}>
-            {s}
+      <div className="container py-4">
+        {/* Dateline */}
+        <div className="d-flex justify-content-between align-items-center text-uppercase small text-muted mb-3">
+          <span>Edição digital</span>
+          <span>{formatDate()}</span>
+        </div>
+
+        {/* Breaking news */}
+        {breaking && (
+          <a
+            href={breaking.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="alert alert-danger d-flex align-items-center gap-3 text-decoration-none text-dark mb-4"
+            role="alert"
+          >
+            {breaking.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={breaking.image} alt="" className="thumb-sm rounded" style={{ width: 48, height: 48 }} />
+            )}
+            <span className="badge bg-danger flex-shrink-0">Última hora</span>
+            <span className="flex-grow-1">
+              <strong>{breaking.title}</strong>
+              {breakingAISummary && <span className="fst-italic"> — {breakingAISummary}</span>}
+            </span>
+            <span className="small text-muted flex-shrink-0">
+              {breaking.source}
+              {breaking.pubDate ? ` · ${formatTime(breaking.pubDate)}` : ""}
+            </span>
           </a>
-        ))}
-      </nav>
+        )}
 
-      {breaking && (
-        <a className="breaking" href={breaking.link} target="_blank" rel="noopener noreferrer">
-          {breaking.image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="breaking-img" src={breaking.image} alt="" />
-          )}
-          <span className="breaking-tag">Última hora</span>
-          <span className="breaking-text">
-            {breaking.title}
-            {breakingAISummary && <span className="breaking-ai"> — {breakingAISummary}</span>}
-          </span>
-          <span className="breaking-source">
-            {breaking.source}
-            {breaking.pubDate ? ` · ${formatTime(breaking.pubDate)}` : ""}
-          </span>
-        </a>
-      )}
+        {/* Featured lead story */}
+        {lead && (
+          <div className="card mb-5 border-0 shadow-sm">
+            <div className="row g-0">
+              {lead.image && (
+                <div className="col-md-6">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={lead.image} alt="" className="thumb-lead rounded-start h-100" />
+                </div>
+              )}
+              <div className={lead.image ? "col-md-6" : "col-12"}>
+                <div className="card-body h-100 d-flex flex-column">
+                  <span className="badge bg-danger-subtle text-danger-emphasis mb-2 align-self-start">
+                    Manchete · Mundo
+                  </span>
+                  <a href={lead.link} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                    <h2 className="card-title brand-logo fs-3 text-dark">{lead.title}</h2>
+                  </a>
+                  <p className="card-text text-muted">
+                    {leadAISummary ? (
+                      <>
+                        <span className="badge border border-secondary text-secondary ai-badge me-1">
+                          Resumo por IA
+                        </span>
+                        {leadAISummary}
+                      </>
+                    ) : (
+                      lead.description &&
+                      `${lead.description.slice(0, 280)}${lead.description.length > 280 ? "…" : ""}`
+                    )}
+                  </p>
+                  <p className="card-text mt-auto">
+                    <small className="text-muted text-uppercase">
+                      Fonte: {lead.source} {lead.pubDate ? `· ${formatTime(lead.pubDate)}` : ""}
+                    </small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
-      {lead && (
-        <section className="lead">
-          <p className="kicker">Manchete · Mundo</p>
-          {lead.image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="lead-img" src={lead.image} alt="" />
-          )}
-          <a href={lead.link} target="_blank" rel="noopener noreferrer">
-            <h2>{lead.title}</h2>
-          </a>
-          {leadAISummary ? (
-            <p>
-              <span className="ai-badge">Resumo por IA</span> {leadAISummary}
-            </p>
-          ) : (
-            lead.description && (
-              <p>
-                {lead.description.slice(0, 320)}
-                {lead.description.length > 320 ? "…" : ""}
-              </p>
-            )
-          )}
-          <p className="byline">
-            Fonte: {lead.source} {lead.pubDate ? `· ${formatTime(lead.pubDate)}` : ""}
-          </p>
-        </section>
-      )}
-
-      <div className="sections">
+        {/* Sections */}
         {SECTION_ORDER.map((section) => {
           const items =
             section === "Mundo" ? restMundo : bySection[section].slice(0, section === "Brasil" ? 8 : 6);
           return (
-            <div className={`section-col${section === "Brasil" ? " featured" : ""}`} id={section} key={section}>
-              <h2 className="section-heading">{section}</h2>
-              {items.length === 0 && <p className="empty-note">Sem manchetes disponíveis no momento.</p>}
-              {items.map((h, i) => (
-                <article className="headline" key={`${section}-${i}`}>
-                  <a href={h.link} target="_blank" rel="noopener noreferrer" className="headline-row">
-                    {h.image && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img className="headline-img" src={h.image} alt="" />
-                    )}
-                    <span>
-                      <h3>{h.title}</h3>
-                      <p className="meta">
-                        {h.source}
-                        {h.pubDate ? ` · ${formatTime(h.pubDate)}` : ""}
-                      </p>
-                    </span>
-                  </a>
-                </article>
-              ))}
-            </div>
+            <section id={section} key={section} className="mb-5">
+              <h2 className="border-bottom border-danger border-2 pb-2 mb-3 text-danger-emphasis text-uppercase fs-5">
+                {section}
+              </h2>
+              {items.length === 0 && <p className="text-muted fst-italic">Sem manchetes disponíveis no momento.</p>}
+              <div className="row row-cols-1 row-cols-md-2 g-3">
+                {items.map((h, i) => (
+                  <div className="col" key={`${section}-${i}`}>
+                    <a
+                      href={h.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="d-flex gap-3 text-decoration-none text-dark"
+                    >
+                      {h.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={h.image} alt="" className="thumb-sm rounded" />
+                      ) : (
+                        <div className="thumb-sm rounded bg-secondary-subtle flex-shrink-0" />
+                      )}
+                      <span>
+                        <span className="d-block fw-semibold lh-sm">{h.title}</span>
+                        <small className="text-muted text-uppercase">
+                          {h.source}
+                          {h.pubDate ? ` · ${formatTime(h.pubDate)}` : ""}
+                        </small>
+                      </span>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </section>
           );
         })}
       </div>
 
-      <footer>
-        O Correio Global reúne manchetes de fontes públicas (G1, BBC News Brasil, Agência Brasil, CNN Brasil e GE)
-        e atualiza a cada hora. As matérias completas estão nos sites originais dos veículos.
+      <footer className="bg-dark text-white-50 py-4">
+        <div className="container small">
+          O Correio Global reúne manchetes de fontes públicas (G1, BBC News Brasil, Agência Brasil, CNN Brasil e GE)
+          e atualiza a cada hora. As matérias completas estão nos sites originais dos veículos.
+        </div>
       </footer>
-    </main>
+    </>
   );
 }
