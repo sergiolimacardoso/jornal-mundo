@@ -48,6 +48,13 @@ Siga as perguntas na tela (login, nome do projeto) e ao final ele te dá a URL p
 Edite `lib/sources.ts`. Cada item é um feed RSS público (não precisa de chave de API).
 Já vem com G1, BBC News Brasil, Agência Brasil, CNN Brasil e GE, organizados em 6 seções: Brasil, Mundo, Economia, Tecnologia, Ciência e Esportes.
 
+## Cotações de moedas
+
+A faixa de cotações (Dólar, Euro, Libra, Iene, Yuan e Peso argentino) usa o endpoint aberto
+e gratuito da ExchangeRate-API (https://www.exchangerate-api.com), sem chave e sem cadastro.
+Atualiza junto com o resto da página, a cada hora. Para adicionar ou trocar moedas, edite a
+lista `CURRENCIES` em `lib/currency.ts`.
+
 ## Ativar o resumo por IA (opcional)
 
 O site funciona normalmente sem isso — a manchete principal e a última hora simplesmente
