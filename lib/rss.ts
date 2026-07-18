@@ -73,6 +73,7 @@ export async function getHeadlinesBySection(): Promise<Record<Section, Headline[
   );
 
   const bySection: Record<Section, Headline[]> = {
+    Brasil: [],
     Mundo: [],
     Economia: [],
     Tecnologia: [],
