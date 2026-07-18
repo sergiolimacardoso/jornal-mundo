@@ -46,7 +46,26 @@ Siga as perguntas na tela (login, nome do projeto) e ao final ele te dá a URL p
 ## Trocar as fontes de notícia
 
 Edite `lib/sources.ts`. Cada item é um feed RSS público (não precisa de chave de API).
-Já vem com G1, BBC News Brasil, Agência Brasil e CNN Brasil, organizados em 5 seções: Brasil, Mundo, Economia, Tecnologia e Ciência.
+Já vem com G1, BBC News Brasil, Agência Brasil, CNN Brasil e GE, organizados em 6 seções: Brasil, Mundo, Economia, Tecnologia, Ciência e Esportes.
+
+## Ativar o resumo por IA (opcional)
+
+O site funciona normalmente sem isso — a manchete principal e a última hora simplesmente
+mostram o texto original do feed. Para ativar os resumos gerados por IA:
+
+1. Crie uma conta em https://console.anthropic.com e gere uma chave de API
+   (existe um saldo grátis inicial; depois disso o custo é muito baixo, já que
+   só resumimos 2 notícias por hora com o modelo mais barato, o Claude Haiku).
+2. No painel do seu projeto na Vercel, vá em **Settings → Environment Variables**.
+3. Adicione uma variável chamada `ANTHROPIC_API_KEY` com o valor da sua chave.
+4. Clique em **"Redeploy"** para o site pegar a nova variável.
+
+## Imagens
+
+As imagens vêm automaticamente dos próprios feeds RSS (quando a fonte inclui uma).
+Não precisa de nenhuma configuração — não usamos o componente `next/image` de propósito,
+para não depender de uma lista fixa de domínios permitidos (as fontes podem trocar de CDN
+sem avisar).
 
 ## Rodar localmente antes de publicar (opcional)
 
