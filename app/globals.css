@@ -217,6 +217,21 @@ a {
   border-right: none;
 }
 
+.section-col.featured {
+  grid-column: 1 / -1;
+  border-right: none;
+  column-count: 2;
+  column-gap: 30px;
+}
+
+.section-col.featured .section-heading {
+  column-span: all;
+}
+
+.section-col.featured .headline {
+  break-inside: avoid;
+}
+
 .section-heading {
   font-family: "Piazzolla", serif;
   font-weight: 700;
@@ -280,6 +295,9 @@ footer {
   }
   .section-col {
     border-right: none;
+  }
+  .section-col.featured {
+    column-count: 1;
   }
   .masthead-main {
     flex-direction: column-reverse;

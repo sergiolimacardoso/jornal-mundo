@@ -68,9 +68,10 @@ export default async function Home() {
 
       <div className="sections">
         {SECTION_ORDER.map((section) => {
-          const items = section === "Mundo" ? restMundo : bySection[section].slice(0, 6);
+          const items =
+            section === "Mundo" ? restMundo : bySection[section].slice(0, section === "Brasil" ? 8 : 6);
           return (
-            <div className="section-col" id={section} key={section}>
+            <div className={`section-col${section === "Brasil" ? " featured" : ""}`} id={section} key={section}>
               <h2 className="section-heading">{section}</h2>
               {items.length === 0 && <p className="empty-note">Sem manchetes disponíveis no momento.</p>}
               {items.map((h, i) => (
