@@ -1,5 +1,6 @@
 import { getHeadlinesBySection } from "@/lib/rss";
 import { SECTION_ORDER } from "@/lib/sources";
+import { summarizeWithAI } from "@/lib/summarize";
 import EditionStamp from "@/components/EditionStamp";
 
 // Regera a página no máximo a cada hora (ISR) — é o que garante
@@ -33,6 +34,14 @@ export default async function Home() {
     .filter((h) => h.pubDate && !isNaN(new Date(h.pubDate).getTime()))
     .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())[0];
 
+  // Resumo por IA só para a manchete e a última hora (mantém o custo mínimo).
+  // Se não houver ANTHROPIC_API_KEY configurada, cai automaticamente na
+  // descrição original do feed — o site nunca depende disso para funcionar.
+  const [leadAISummary, breakingAISummary] = await Promise.all([
+    lead ? summarizeWithAI(lead.title, lead.description) : Promise.resolve(null),
+    breaking ? summarizeWithAI(breaking.title, breaking.description) : Promise.resolve(null),
+  ]);
+
   return (
     <main className="wrap">
       <header className="masthead">
@@ -59,14 +68,16 @@ export default async function Home() {
       </nav>
 
       {breaking && (
-        <a
-          className="breaking"
-          href={breaking.link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a className="breaking" href={breaking.link} target="_blank" rel="noopener noreferrer">
+          {breaking.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="breaking-img" src={breaking.image} alt="" />
+          )}
           <span className="breaking-tag">Última hora</span>
-          <span className="breaking-text">{breaking.title}</span>
+          <span className="breaking-text">
+            {breaking.title}
+            {breakingAISummary && <span className="breaking-ai"> — {breakingAISummary}</span>}
+          </span>
           <span className="breaking-source">
             {breaking.source}
             {breaking.pubDate ? ` · ${formatTime(breaking.pubDate)}` : ""}
@@ -77,10 +88,25 @@ export default async function Home() {
       {lead && (
         <section className="lead">
           <p className="kicker">Manchete · Mundo</p>
+          {lead.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="lead-img" src={lead.image} alt="" />
+          )}
           <a href={lead.link} target="_blank" rel="noopener noreferrer">
             <h2>{lead.title}</h2>
           </a>
-          {lead.description && <p>{lead.description.slice(0, 320)}{lead.description.length > 320 ? "…" : ""}</p>}
+          {leadAISummary ? (
+            <p>
+              <span className="ai-badge">Resumo por IA</span> {leadAISummary}
+            </p>
+          ) : (
+            lead.description && (
+              <p>
+                {lead.description.slice(0, 320)}
+                {lead.description.length > 320 ? "…" : ""}
+              </p>
+            )
+          )}
           <p className="byline">
             Fonte: {lead.source} {lead.pubDate ? `· ${formatTime(lead.pubDate)}` : ""}
           </p>
@@ -97,13 +123,19 @@ export default async function Home() {
               {items.length === 0 && <p className="empty-note">Sem manchetes disponíveis no momento.</p>}
               {items.map((h, i) => (
                 <article className="headline" key={`${section}-${i}`}>
-                  <a href={h.link} target="_blank" rel="noopener noreferrer">
-                    <h3>{h.title}</h3>
+                  <a href={h.link} target="_blank" rel="noopener noreferrer" className="headline-row">
+                    {h.image && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img className="headline-img" src={h.image} alt="" />
+                    )}
+                    <span>
+                      <h3>{h.title}</h3>
+                      <p className="meta">
+                        {h.source}
+                        {h.pubDate ? ` · ${formatTime(h.pubDate)}` : ""}
+                      </p>
+                    </span>
                   </a>
-                  <p className="meta">
-                    {h.source}
-                    {h.pubDate ? ` · ${formatTime(h.pubDate)}` : ""}
-                  </p>
                 </article>
               ))}
             </div>
@@ -112,8 +144,8 @@ export default async function Home() {
       </div>
 
       <footer>
-        O Correio Global reúne manchetes de fontes públicas (G1, BBC News Brasil, Agência Brasil e CNN Brasil) e
-        atualiza a cada hora. As matérias completas estão nos sites originais dos veículos.
+        O Correio Global reúne manchetes de fontes públicas (G1, BBC News Brasil, Agência Brasil, CNN Brasil e GE)
+        e atualiza a cada hora. As matérias completas estão nos sites originais dos veículos.
       </footer>
     </main>
   );
