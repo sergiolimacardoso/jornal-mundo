@@ -74,6 +74,19 @@ Não precisa de nenhuma configuração — não usamos o componente `next/image`
 para não depender de uma lista fixa de domínios permitidos (as fontes podem trocar de CDN
 sem avisar).
 
+## Otimizações de carregamento
+
+- O Bootstrap (CSS e JS) é instalado localmente via `npm install`, não vem de um CDN externo
+  — isso evita uma conexão a mais no primeiro carregamento.
+- O JS do Bootstrap só carrega depois que a página já está visível (usado apenas pelo menu
+  do celular), então não atrasa a primeira renderização.
+- A fonte do logo é auto-hospedada pelo Next.js (`next/font/google`), sem depender do
+  Google Fonts em tempo de execução.
+- As imagens das notícias usam carregamento preguiçoso (`loading="lazy"`), exceto a da
+  manchete principal, que carrega com prioridade alta por ser a mais importante na tela.
+- Como o site usa ISR (ver seção acima), a grande maioria das visitas recebe a página já
+  pronta em cache — a busca nos feeds só acontece em segundo plano, uma vez por hora.
+
 ## Rodar localmente antes de publicar (opcional)
 
 ```bash
