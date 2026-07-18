@@ -119,7 +119,16 @@ export default async function Home() {
           >
             {breaking.image && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={breaking.image} alt="" className="thumb-sm rounded" style={{ width: 48, height: 48 }} />
+              <img
+                src={breaking.image}
+                alt=""
+                className="thumb-sm rounded"
+                style={{ width: 48, height: 48 }}
+                width={48}
+                height={48}
+                loading="lazy"
+                decoding="async"
+              />
             )}
             <span className="badge bg-danger flex-shrink-0">Última hora</span>
             <span className="flex-grow-1">
@@ -140,7 +149,14 @@ export default async function Home() {
               {lead.image && (
                 <div className="col-md-6">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={lead.image} alt="" className="thumb-lead rounded-start h-100" />
+                  <img
+                    src={lead.image}
+                    alt=""
+                    className="thumb-lead rounded-start"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                  />
                 </div>
               )}
               <div className={lead.image ? "col-md-6" : "col-12"}>
@@ -196,7 +212,15 @@ export default async function Home() {
                     >
                       {h.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={h.image} alt="" className="thumb-sm rounded" />
+                        <img
+                          src={h.image}
+                          alt=""
+                          className="thumb-sm rounded"
+                          width={64}
+                          height={64}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       ) : (
                         <div className="thumb-sm rounded bg-secondary-subtle flex-shrink-0" />
                       )}
