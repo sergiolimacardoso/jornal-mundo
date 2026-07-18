@@ -1,6 +1,7 @@
 import { getHeadlinesBySection } from "@/lib/rss";
 import { SECTION_ORDER } from "@/lib/sources";
 import { summarizeWithAI } from "@/lib/summarize";
+import { getCurrencyRates } from "@/lib/currency";
 import EditionStamp from "@/components/EditionStamp";
 
 // Regera a página no máximo a cada hora (ISR) — é o que garante
@@ -24,7 +25,7 @@ function formatTime(pubDate: string): string {
 }
 
 export default async function Home() {
-  const bySection = await getHeadlinesBySection();
+  const [bySection, currencies] = await Promise.all([getHeadlinesBySection(), getCurrencyRates()]);
   const allMundo = bySection["Mundo"];
   const lead = allMundo[0];
   const restMundo = allMundo.slice(1, 6);
@@ -58,6 +59,33 @@ export default async function Home() {
           <EditionStamp />
         </div>
       </header>
+
+      {currencies.length > 0 && (
+        <div className="ticker">
+          <span className="ticker-label">Mercado</span>
+          <div className="ticker-items">
+            {currencies.map((c) => (
+              <span className="ticker-item" key={c.code}>
+                <strong>{c.code}</strong> {c.name}{" "}
+                <span className="ticker-value">
+                  {c.valueInBRL.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </span>
+              </span>
+            ))}
+          </div>
+          <a
+            className="ticker-credit"
+            href="https://www.exchangerate-api.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Cotações: ExchangeRate-API
+          </a>
+        </div>
+      )}
 
       <nav className="section-nav">
         {SECTION_ORDER.map((s) => (
