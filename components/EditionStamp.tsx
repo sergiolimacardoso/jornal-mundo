@@ -29,11 +29,8 @@ export default function EditionStamp() {
   }, []);
 
   return (
-    <div className="stamp" title="Tempo até a próxima edição">
-      <span className="label">Próxima edição</span>
-      <span className="time">
-        {countdown.minutes}m {String(countdown.seconds).padStart(2, "0")}s
-      </span>
-    </div>
+    <span className="badge text-bg-light border edition-stamp fs-6 px-3 py-2" title="Tempo até a próxima edição">
+      🕐 Próxima edição em {countdown.minutes}m {String(countdown.seconds).padStart(2, "0")}s
+    </span>
   );
 }
