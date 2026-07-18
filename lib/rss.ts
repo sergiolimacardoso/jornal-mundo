@@ -7,6 +7,7 @@ export interface Headline {
   description: string;
   source: string;
   section: Section;
+  image?: string;
 }
 
 function decodeEntities(str: string): string {
@@ -27,6 +28,18 @@ function extractTag(block: string, tag: string): string {
   return match ? decodeEntities(match[1]) : "";
 }
 
+function extractImage(block: string): string | undefined {
+  let m = block.match(/<enclosure[^>]*url="([^"]+)"[^>]*\/?>/i);
+  if (m) return m[1];
+  m = block.match(/<media:content[^>]*url="([^"]+)"/i);
+  if (m) return m[1];
+  m = block.match(/<media:thumbnail[^>]*url="([^"]+)"/i);
+  if (m) return m[1];
+  m = block.match(/<img[^>]+src="([^"]+)"/i);
+  if (m) return m[1];
+  return undefined;
+}
+
 function parseRss(xml: string): Omit<Headline, "source" | "section">[] {
   const items: Omit<Headline, "source" | "section">[] = [];
   const itemMatches = xml.match(/<item[\s\S]*?<\/item>/gi) || [];
@@ -36,9 +49,10 @@ function parseRss(xml: string): Omit<Headline, "source" | "section">[] {
     const link = extractTag(block, "link") || extractTag(block, "guid");
     const pubDate = extractTag(block, "pubDate") || extractTag(block, "published");
     const description = extractTag(block, "description") || extractTag(block, "summary");
+    const image = extractImage(block);
 
     if (title && link) {
-      items.push({ title, link, pubDate, description });
+      items.push({ title, link, pubDate, description, image });
     }
   }
 
@@ -78,6 +92,7 @@ export async function getHeadlinesBySection(): Promise<Record<Section, Headline[
     Economia: [],
     Tecnologia: [],
     Ciência: [],
+    Esportes: [],
   };
 
   for (const list of results) {
