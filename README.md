@@ -1,7 +1,7 @@
 # O Correio Global
 
-Jornal de notícias que busca as principais manchetes do mundo (BBC, Al Jazeera, NPR)
-e se atualiza sozinho a cada hora, sem precisar de chave de API.
+Jornal de notícias que busca as principais manchetes em português (G1, BBC News Brasil,
+Agência Brasil, CNN Brasil) e se atualiza sozinho a cada hora, sem precisar de chave de API.
 
 ## Como publicar na Vercel (passo a passo)
 
@@ -46,7 +46,7 @@ Siga as perguntas na tela (login, nome do projeto) e ao final ele te dá a URL p
 ## Trocar as fontes de notícia
 
 Edite `lib/sources.ts`. Cada item é um feed RSS público (não precisa de chave de API).
-Já vem com BBC, Al Jazeera e NPR organizados em 4 seções: Mundo, Economia, Tecnologia e Ciência.
+Já vem com G1, BBC News Brasil, Agência Brasil e CNN Brasil, organizados em 5 seções: Brasil, Mundo, Economia, Tecnologia e Ciência.
 
 ## Rodar localmente antes de publicar (opcional)
 
